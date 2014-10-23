@@ -69,6 +69,8 @@ GEM
     arel (5.0.1.20140414130214)
     awesome_print (1.2.0)
     bcrypt (3.1.7)
+    bcrypt-ruby (3.1.5)
+      bcrypt (>= 3.1.3)
     better_errors (1.1.0)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
@@ -324,6 +326,7 @@ GEM
     rb-inotify (0.9.5)
       diff-lcs (>= 1.1.3, < 2.0)
       ffi (>= 0.5.0)
+    recaptcha (0.3.6)
     redcarpet (3.1.2)
     ref (1.0.5)
     require_all (1.3.2)
@@ -455,6 +458,7 @@ DEPENDENCIES
   acts_as_votable (~> 0.10.0)
   addressable
   awesome_print
+  bcrypt-ruby (~> 3.1.2)
   better_errors
   binding_of_caller
   bootstrap-modal-rails
@@ -508,6 +512,7 @@ DEPENDENCIES
   rails (= 4.1.0)
   rails_12factor
   rails_config
+  recaptcha (~> 0.3.5)
   redcarpet
   rspec (< 3.0)
   rspec-activemodel-mocks

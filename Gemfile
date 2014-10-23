@@ -44,7 +44,8 @@ gem 'youtube_it' # ruby wrapper for youtube API
 gem 'acts_as_votable', '~> 0.10.0' #Allows WSO to track member's votes on votable objects (articles, comments, ...)
 gem 'utf8-cleaner'
 gem 'public_activity' #Create activity feed
-
+gem 'recaptcha',  '~> 0.3.5'
+gem 'bcrypt-ruby',  '~> 3.1.2'
 gem 'yui-compressor'
 gem 'compass-rails'
 gem 'rack-cache'
