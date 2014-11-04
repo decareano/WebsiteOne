@@ -40,6 +40,10 @@ def path_to(page_name, id = '')
       hookups_path
     when 'dashboard' then
       '/dashboard' 
+    when 'new newsletter' then
+      new_newsletter_path
+    when 'newsletters index' then
+      newsletters_path
     else
       raise('path to specified is not listed in #path_to')
   end
@@ -164,6 +168,13 @@ Then /^I should( not)? see "([^"]*)"$/ do |negative, string|
   end
 end
 
+Then /^I should( not)? see a flash "([^"]*)"$/ do |negative, string|
+  unless negative
+    expect(page).to have_css '.alert', text: string
+  else
+    expect(page).to_not have_css '.alert', text: string
+  end
+end
 
 Then /^I should( not)? see "([^"]*)" in "([^"]*)"$/ do |negative, string, scope|
   within(selector_for(scope)) { step %Q{I should#{negative} see "#{string}"} }

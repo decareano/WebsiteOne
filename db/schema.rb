@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20140914202645) do
+=======
+ActiveRecord::Schema.define(version: 20141007192312) do
+>>>>>>> 6776e07feb27958db59ad70ce1868bdef8be2534
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,6 +118,7 @@ ActiveRecord::Schema.define(version: 20140914202645) do
   add_index "follows", ["followable_id", "followable_type"], name: "fk_followables", using: :btree
   add_index "follows", ["follower_id", "follower_type"], name: "fk_follows", using: :btree
 
+<<<<<<< HEAD
   create_table "hangouts", force: true do |t|
     t.integer  "event_id"
     t.string   "title"
@@ -126,6 +131,18 @@ ActiveRecord::Schema.define(version: 20140914202645) do
     t.integer  "user_id"
     t.string   "yt_video_id"
     t.text     "participants"
+=======
+  create_table "newsletters", force: true do |t|
+    t.string   "title",                        null: false
+    t.string   "subject",                      null: false
+    t.text     "body",                         null: false
+    t.boolean  "do_send",      default: false
+    t.boolean  "was_sent",     default: false
+    t.integer  "last_user_id", default: 0
+    t.datetime "sent_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+>>>>>>> 6776e07feb27958db59ad70ce1868bdef8be2534
   end
 
   create_table "projects", force: true do |t|
@@ -139,6 +156,7 @@ ActiveRecord::Schema.define(version: 20140914202645) do
     t.string   "github_url"
     t.string   "pivotaltracker_url"
     t.text     "pitch"
+    t.integer  "commit_count",       default: 0
   end
 
   add_index "projects", ["slug"], name: "index_projects_on_slug", unique: true, using: :btree
@@ -161,6 +179,13 @@ ActiveRecord::Schema.define(version: 20140914202645) do
   end
 
   add_index "static_pages", ["slug"], name: "index_static_pages_on_slug", unique: true, using: :btree
+
+  create_table "statuses", force: true do |t|
+    t.string   "status"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"

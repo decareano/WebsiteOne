@@ -7,8 +7,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   helper_method :static_page_path
 
+<<<<<<< HEAD
   before_filter :get_next_event, :store_location
+=======
+  before_filter :get_next_scrum, :store_location, unless: -> { request.xhr? }
+>>>>>>> 6776e07feb27958db59ad70ce1868bdef8be2534
   before_action :configure_permitted_parameters, if: :devise_controller?
+  after_filter :user_activity
 
   include ApplicationHelper
   include CustomErrors
@@ -20,7 +25,7 @@ class ApplicationController < ActionController::Base
       u.permit(:first_name, :last_name, :email, :bio, :password,
                :password_confirmation, :current_password,
                :display_email, :display_profile, :display_hire_me,
-               :receive_mailings)
+               :receive_mailings, :status)
     end
   end
 
@@ -28,34 +33,52 @@ class ApplicationController < ActionController::Base
     request.env['omniauth.origin'] || session[:previous_url] || root_path
   end
 
+  # see Settings.yml for privileged user
+  # 
+  def check_privileged
+    raise ::AgileVentures::AccessDenied.new(current_user, request) unless current_user.is_privileged?
+  end
+
+  rescue_from ::AgileVentures::AccessDenied do |exception|
+    render file: "#{Rails.root}/public/403.html", status: 403, layout: false
+  end
+
   private
 
-  def black_listed_urls
-    [ 
-         user_session_path,
-         new_user_registration_path,
-         new_user_password_path,
-         destroy_user_session_path,
-         "#{edit_user_password_path}.*"
+  def request_path_blacklisted?
+    paths = [
+      user_session_path,
+      new_user_registration_path,
+      new_user_password_path,
+      destroy_user_session_path,
+      "#{edit_user_password_path}.*"
     ]
+
+    paths.any?{ |path| request.path =~ %r(#{path})}
   end
 
-  def black_listed_url?(blacklist)
-    blacklist.any?{ |pattern| request.path =~ %r(#{pattern})}
-  end
-
+<<<<<<< HEAD
   def conventional_get_request?
     request.get? && !request.xhr?
   end	
 
   def get_next_event
     @next_event = Event.next_event_occurrence
+=======
+  def get_next_scrum
+    @next_event = Event.next_occurrence(:Scrum)
+>>>>>>> 6776e07feb27958db59ad70ce1868bdef8be2534
   end
 
   def store_location
     # store last url - this is needed for post-login redirect to whatever the user last visited.
-    if conventional_get_request? && !black_listed_url?(black_listed_urls)  
-      session[:previous_url] = request.fullpath 
+    if request.get? && !request_path_blacklisted?
+      session[:previous_url] = request.fullpath
     end
   end
+
+  def user_activity
+    current_user.try :touch
+  end
+
 end

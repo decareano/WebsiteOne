@@ -36,9 +36,11 @@ describe ProjectsController, :type => :controller do
 
 
     it 'should assign variables to be rendered by view' do
-      allow(Project).to receive(:search).and_return('Carrier has arrived.')
+      @project = mock_model(Project, title: 'Carrier has arrived.')
+      allow(Project).to receive(:search).and_return(@project)
+      @project.stub(:includes).and_return(@project)
       get :index
-      expect(assigns(:projects)).to eq 'Carrier has arrived.'
+      expect(assigns(:projects).title).to eq 'Carrier has arrived.'
     end
   end
 
@@ -232,7 +234,8 @@ describe ProjectsController, :type => :controller do
       end
 
       it 'received :create_activity with :update' do
-        expect(@project).to have_received(:create_activity).with(:update, {owner: @user })
+        expect(@project).to have_received(:create_activity)
+                            .with(:update, {owner: @user })
       end
 
       it 'redirects to the project' do
@@ -255,6 +258,39 @@ describe ProjectsController, :type => :controller do
 
       it 'shows an unsuccessful message' do
         expect(flash[:alert]).to eq('Project was not updated.')
+      end
+    end
+
+    context 'pitch update with Mercury' do
+      @project = FactoryGirl.create(:project)
+      let(:params) do
+            {:id=>@project,
+             :content=>
+                 {:pitch_content=>{:value=>"my new pitch"},
+                  }}
+      end
+      let(:project) { @project }
+
+      before(:each) do
+        allow(@project).to receive(:update_attributes).and_return(true)
+        allow(project).to receive(:create_activity)
+        put :mercury_update, params
+
+      end
+
+      it 'should render an empty string' do
+        expect(response.body).to be_empty
+      end
+
+
+      it 'should update the project pitch with the content' do
+        expect(project).to have_received(:update_attributes)
+                            .with(pitch: 'my new pitch')
+      end
+
+      it 'received :create_activity with :update' do
+        expect(project).to have_received(:create_activity)
+                            .with(:update, owner: @user)
       end
     end
   end

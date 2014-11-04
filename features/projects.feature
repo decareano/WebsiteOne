@@ -6,7 +6,7 @@ Feature: Create and maintain projects
   Background:
     Given the following projects exist:
       | title         | description             | pitch       | status   | github_url                                  | pivotaltracker_url                               |
-      | hello world   | greetings earthlings    |             | active   | https://github.com/agileventures/helloworld | https://www.pivotaltracker.com/s/projects/742821 |
+      | hello world   | greetings earthlings    |             | active   | https://github.com/AgileVentures/WebsiteOne | https://www.pivotaltracker.com/s/projects/742821 |
       | hello mars    | greetings aliens        |             | inactive |                                             |                                                  |
       | hello jupiter | greetings jupiter folks |             | active   |                                             |                                                  |
       | hello mercury | greetings mercury folks |             | inactive |                                             |                                                  |
@@ -41,6 +41,18 @@ Feature: Create and maintain projects
       | hello mars              |
       | greetings aliens        |
       | INACTIVE                |
+
+  @github_query
+  Scenario: See total github commit count for projects
+    Given  I am on the "home" page
+    And I fetch the GitHub contribution statistics
+    When I follow "Projects" within the navbar
+    And I go to the next page
+    Then I should see:
+      | Text                    |
+      | hello world             |
+      | ACTIVE                  |
+      | 2795                    |
 
   Scenario: Show New Project button if user is logged in
     When I am logged in
@@ -149,7 +161,7 @@ Feature: Create and maintain projects
     And I fill in "PivotalTracker link" with "https://www.pivotaltracker.com/s/projects/853345"
     And I click the "Submit" button
     Then I should be on the "Show" page for project "hello mars"
-    And I should see "Project was successfully updated."
+    And I should see a flash "Project was successfully updated."
     And I should see "Hello, Uranus!"
     And I should see a link to "hello mars" on github
     And I should see a link to "hello mars" on Pivotal Tracker
@@ -165,19 +177,20 @@ Feature: Create and maintain projects
     Given I am logged in
     And I am on the "Show" page for project "hello mars"
     And I click the "Join Project" button
-    When I click the "Edit Pitch" button
+    And I click "Project Actions"
+    And I click "Edit Project Pitch"
     Then I should be in the Mercury Editor
 
   @javascript
-  Scenario: Editing Pitch content with Mercury Editor 
+  Scenario: Editing Pitch content with Mercury Editor
     Given I am logged in
     And I am on the "Show" page for project "hello mars"
     And I click the "Join Project" button
     And I am using the Mercury Editor to edit project "hello mars"
     When I fill in the editable field "Pitch" for "project" with "This is my exciting marketing content"
     And I click "Save" within Mercury Editor toolbar
-    Then I should see "The project has been successfully updated."
-    And I should be on the "Show" page for project "hello mars"
+    Then I should see a flash "The project has been successfully updated."
+    Then I should be on the "Show" page for project "hello mars"
     And I should see "This is my exciting marketing content"
 
   Scenario: The Mercury Editor cannot be accessed by non-logged in users

@@ -35,7 +35,7 @@ class HangoutsController < ApplicationController
   end
 
   def local_request?
-    request.remote_ip == '127.0.0.1'
+    request.env['HTTP_ORIGIN'] =~ /#{request.env['HTTP_HOST']}/
   end
 
   def set_cors_headers

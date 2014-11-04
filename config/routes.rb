@@ -4,9 +4,14 @@ WebsiteOne::Application.routes.draw do
 
   root 'visitors#index'
   resources :activities
+  resources :newsletters
 
   devise_for :users, :controllers => {:registrations => 'registrations'}
-  resources :users, :only => [:index, :show] , :format => false
+  resources :users, :only => [:index, :show] , :format => false do
+    member do
+      patch :add_status
+    end
+  end
 
   resources :articles, :format => false do
     member do
@@ -21,10 +26,10 @@ WebsiteOne::Application.routes.draw do
 
   resources :projects, :format => false do
     member do
-      get :follow
-      get :unfollow
       put :mercury_update
       get :mercury_saved
+      get :follow
+      get :unfollow
     end
 
     resources :documents, except: [:edit, :update], :format => false do
@@ -38,6 +43,7 @@ WebsiteOne::Application.routes.draw do
       patch :update_only_url
     end
   end
+
 
   get '/verify/:id' => redirect {|params,request| "http://av-certificates.herokuapp.com/verify/#{params[:id]}"}
 
@@ -64,4 +70,7 @@ WebsiteOne::Application.routes.draw do
   get '*id', to: 'static_pages#show', as: 'static_page', :format => false
 
 end
+
+
+
 
